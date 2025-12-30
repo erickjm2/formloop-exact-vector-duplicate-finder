@@ -1,158 +1,159 @@
-Formloop Exact Vector Duplicate Finder (MVP)
+FORMLOOP EXACT VECTOR DUPLICATE FINDER (MVP)
+==========================================
 
 Script file: Formloop_Exact_Vector_Duplicate_Finder_MVP.jsx
 Version: v0.2 (Translation-Invariant)
 Host app: Adobe Illustrator (ExtendScript .jsx)
 
-Finds exact duplicate vector paths in your current selection by comparing true path geometry. In v0.2, position is ignored. Two identical shapes in different locations can match.
+------------------------------------------------------------
+
+OVERVIEW
+--------
+
+This script finds exact duplicate vector paths in the CURRENT SELECTION
+by comparing true path geometry.
+
+As of v0.2, matching is translation-invariant.
+Identical shapes in different positions can be detected as duplicates.
+
+------------------------------------------------------------
+
+WHAT IT DOES
+------------
+
+- Operates on the current selection only
+- Recursively scans GroupItems to collect PathItem objects
+- Ignores everything except PathItem
+- Skips locked and hidden items
+- Skips zero-point paths
+- Compares geometry using:
+  - closed state
+  - pathPoints.length
+  - For each point index:
+    - anchor [x,y]
+    - leftDirection [x,y]
+    - rightDirection [x,y]
+- All numeric values are rounded to a user-defined tolerance (pt)
+
+------------------------------------------------------------
+
+WHAT IT DOES NOT DO (MVP LIMITS)
+-------------------------------
+
+- Does not scan the entire document
+- No CompoundPathItem support
+- No clipping mask handling
+- No appearance or color comparison
+- No point order normalization
+- No reversed direction normalization
+- No rotation, scale, or skew invariance
+- No “visually similar” detection
+
+------------------------------------------------------------
+
+HOW TO USE
+----------
+
+1. Select at least TWO vector paths in Illustrator
+2. Run the script via:
+   File > Scripts > Other Script...
+3. In the dialog:
+   - Set Tolerance (pt). Default is 0.01
+   - Choose Mode:
+     * Report only (default)
+     * Delete duplicates (keep first)
+   - Output options:
+     * Create a text report (default ON)
+     * Copy report to clipboard (if supported)
+4. Click Run
+
+------------------------------------------------------------
+
+OUTPUT
+------
+
+REPORT CONTENT
+- Script name and version
+- Total PathItems scanned
+- Skipped counts:
+  - locked
+  - hidden
+  - zero-point
+- Number of duplicate sets found
+- Total duplicates found or deleted
+- Per duplicate set:
+  - set index
+  - number of items
+  - item name (if any)
+  - layer name
+  - geometric bounds (for orientation only)
+
+REPORT PLACEMENT
+- If enabled, a new text frame is created near the
+  top-left of the active artboard
+- Uses Arial as a safe font fallback
+
+------------------------------------------------------------
+
+PERFORMANCE NOTES
+-----------------
+
+- Early exit if fewer than 2 PathItems are found
+- If more than 5000 PathItems are detected, the script
+  prompts before continuing
+
+------------------------------------------------------------
+
+KNOWN MATCHING PITFALLS
+----------------------
 
-What it does
+If shapes appear identical but do not match:
+- Different point order
+- Reversed path direction
+- Different point count
+- Tolerance set too low
 
-Scans your current selection only
+For best results, compare paths created via the same
+construction method (copy/paste, expand appearance, etc.)
 
-Recursively collects PathItem objects inside selected GroupItems
+------------------------------------------------------------
 
-Skips anything that is not a PathItem (no CompoundPath support)
+INSTALLATION
+------------
 
-Compares path geometry using:
+1. Save the .jsx file to disk
+2. Run via:
+   File > Scripts > Other Script...
+3. Optional:
+   Place the file in Illustrator’s Scripts folder
+   and restart Illustrator for permanent access
 
-closed value
+------------------------------------------------------------
 
-pathPoints.length
-
-For each point index:
-
-anchor [x,y]
-
-leftDirection [x,y]
-
-rightDirection [x,y]
-
-Values are rounded to a tolerance (pt)
-
-v0.2 matching behavior: translation-invariant. The script subtracts an origin offset (first anchor point) from every coordinate before comparing.
-
-What it does NOT do (MVP limits)
-
-Does not scan the full document. Selection only
-
-No CompoundPathItem support
-
-No clipping mask or masked content handling (non-PathItems are ignored)
-
-No appearance or color matching
-
-No point order normalization
-
-No reversed-direction normalization
-
-No rotation, scale, or skew invariance
-
-No “visually similar” detection. Only exact geometry after rounding
-
-How to use
-
-In Illustrator, select at least 2 vector paths.
-
-Run the script:
-
-File > Scripts > Other Script…
-
-In the dialog:
-
-Tolerance (pt). Default 0.01
-
-Mode
-
-Report only (default)
-
-Delete duplicates (keep first)
-
-Output
-
-Create a text report (default ON)
-
-Optional. Copy report to clipboard (if supported)
-
-Output
-Report includes
-
-Script name + version
-
-Total PathItems scanned (from selection)
-
-Skipped counts:
-
-locked
-
-hidden
-
-zero-point paths
-
-Number of duplicate sets found
-
-Total duplicates found (or deleted in delete mode)
-
-For each duplicate set:
-
-set index
-
-count in set
-
-for each item: item.name, layer name, and geometricBounds
-
-Report placement
-
-If enabled, the script creates a new text frame near the top-left of the active artboard. Font fallback attempts Arial.
-
-Notes and tips
-
-If your shapes look identical but do not match, common reasons:
-
-Different point order (same shape, different construction)
-
-One path has reversed direction
-
-Different number of points
-
-Tolerance too small for your file’s numeric values
-
-For best results, compare paths created the same way (duplicates from copy/paste, symbols expanded similarly, etc.).
-
-Performance guardrail
-
-If more than 5000 PathItems are found in the selection, the script prompts before continuing.
-
-Install
-
-Save the .jsx file to a known location.
-
-Run via:
-
-File > Scripts > Other Script…
-
-Optional. Place it in Illustrator’s Scripts folder for quick access, then restart Illustrator.
-
-Changelog
+CHANGELOG
+---------
 
 v0.2
-
-Added translation-invariant matching (position ignored)
+- Added translation-invariant geometry matching
 
 v0.1
+- Absolute-coordinate geometry matching only
 
-Absolute-coordinate matching only
+------------------------------------------------------------
 
-License
+LICENSE
+-------
 
-Use, modify, and distribute internally at your own risk. If you plan to sell or publicly distribute, add your preferred license text here.
+MIT License
+Copyright (c) 2025 Formloop
 
-Support / Feedback
+------------------------------------------------------------
 
-If you hit a mismatch case, capture:
+SUPPORT / FEEDBACK
+------------------
 
-a screenshot of the selection
-
-the tolerance used
-
-whether the paths were created by copy/paste, offset path, expand appearance, etc.
+When reporting issues, include:
+- Screenshot of the selected shapes
+- Tolerance used
+- How the paths were created
+  (copy/paste, offset path, expand appearance, etc.)
